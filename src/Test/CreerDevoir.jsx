@@ -1,17 +1,48 @@
-import React, { useState } from 'react';
+import { useState } from "react";
+
+
 
 function CreerDevoir() {
   const [matiere, setMatiere] = useState('');
+  const [type, setType] = useState('Contrôle continu (CC)');
+  const [dateDebut, setDateDebut] = useState('');
   const [duree, setDuree] = useState('');
-  const [dateDepot, setDateDepot] = useState('');
-  const [dateLimite, setDateLimite] = useState('');
   const [fichier, setFichier] = useState(null);
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Logique pour soumettre le devoir
-    console.log({ matiere, duree, dateDepot, dateLimite, fichier });
+  
+    // Calcul automatique de la date limite
+    const dateDebutObj = new Date(dateDebut);
+    const dateLimiteObj = new Date(dateDebutObj.getTime() + duree * 60000);
+    const dateLimite = dateLimiteObj.toISOString().slice(0, 19).replace("T", " ");
+  
+    const formData = new FormData();
+    formData.append("matiere", matiere);
+    formData.append("type", type);
+    formData.append("dateDebut", dateDebut);
+    formData.append("dateLimite", dateLimite);
+    if (fichier) formData.append("fichier", fichier);
+  
+    try {
+      const response = await fetch("http://localhost:5000/api/examens", {
+        method: "POST",
+        body: formData,
+      });
+      console.log(response);
+      const result = await response.json();
+      console.log(" c'est sur c'est la");
+      if (response.ok) {
+        alert("Devoir créé avec succès !");
+      } else {
+        alert("Erreur : " + result.message);
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'envoi :", error);
+    }
   };
+  
+
+
 
   return (
     <div className="creer-devoir-form">
@@ -25,27 +56,28 @@ function CreerDevoir() {
           required
         />
 
+        <label>Type :</label>
+        <select value={type} onChange={(e) => setType(e.target.value)} required>
+          <option value="Contrôle continu (CC)">Contrôle continu (CC)</option>
+          <option value="Devoir surveillé (DS)">Devoir surveillé (DS)</option>
+          <option value="Travaux dirigés (TD)">Travaux dirigés (TD)</option>
+          <option value="Travaux pratiques (TP)">Travaux pratiques (TP)</option>
+          <option value="Projets">Projets</option>
+        </select>  
+
+        <label>Date de Début :</label>
+        <input
+          type="datetime-local"
+          value={dateDebut}
+          onChange={(e) => setDateDebut(e.target.value)}
+          required
+        />
+
         <label>Durée (en minutes) :</label>
         <input
           type="number"
           value={duree}
           onChange={(e) => setDuree(e.target.value)}
-          required
-        />
-
-        <label>Date de Début :</label>
-        <input
-          type="date"
-          value={dateDepot}
-          onChange={(e) => setDateDepot(e.target.value)}
-          required
-        />
-
-        <label>Date Limite :</label>
-        <input
-          type="date"
-          value={dateLimite}
-          onChange={(e) => setDateLimite(e.target.value)}
           required
         />
 

@@ -1,12 +1,28 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
 require("dotenv").config();
 const db = require("./db"); // Importation de la connexion MySQL
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+
+//configuration de multer pour stocké les fichiers dans le dossier /uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Dossier où seront stockés les fichiers
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname)); // Nom unique pour chaque fichier
+  },
+});
+
+const upload = multer({ storage });
+
 
 // 🚀 Route d'inscription
 app.post("/register", async (req, res) => {
@@ -99,6 +115,27 @@ app.post("/login", (req, res) => {
     });
   });
 });
+
+// 🚀 Route pour créer un devoir
+app.post("/api/examens", upload.single("fichier"), (req, res) => {
+  const { matiere, type, dateDebut, dateLimite } = req.body;
+  const fichier = req.file ? req.file.filename : null; // Vérifie si un fichier a été envoyé
+
+  if (!matiere || !type || !dateDebut || !dateLimite) {
+    return res.status(400).json({ error: "Tous les champs sont requis !" });
+  }
+
+  const sql = `INSERT INTO Examen (titre, type, dateDebut, dateLimite, fichier) VALUES (?, ?, ?, ?, ?)`;
+  db.query(sql, [matiere, type, dateDebut, dateLimite, fichier], (err, result) => {
+    if (err) {
+      console.error("Erreur SQL :", err);
+      return res.status(500).json({ error: "Erreur lors de l'ajout du devoir" });
+    }
+    res.status(201).json({ message: "Devoir créé avec succès !" });
+  });
+});
+
+
 
 // Lancer le serveur
 const PORT = process.env.PORT || 5000;

@@ -68,13 +68,35 @@ body {
 .creer-devoir-form input[type="text"],
 .creer-devoir-form input[type="number"],
 .creer-devoir-form input[type="date"],
-.creer-devoir-form input[type="file"] {
+.creer-devoir-form input[type="datetime-local"],
+.creer-devoir-form input[type="file"],
+.creer-devoir-form select { /* Ajout du style pour <select> */
   width: 100%;
   padding: 10px;
   margin-bottom: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
+  background-color: white;
+  color: #333;
+}
+
+/* Ajout d'un style au <select> pour qu'il ressemble aux inputs */
+.creer-devoir-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+/* Ajout d'un icône de flèche pour le <select> */
+.creer-devoir-form select:after {
+  content: '▼';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .creer-devoir-form button {
@@ -91,6 +113,7 @@ body {
 .creer-devoir-form button:hover {
   background-color: #219653;
 }
+
 
 /* Liste des devoirs */
 .liste-devoirs {
