@@ -7,6 +7,7 @@ function CreerDevoir() {
   const [type, setType] = useState('Contrôle continu (CC)');
   const [dateDebut, setDateDebut] = useState('');
   const [duree, setDuree] = useState('');
+  const [message, setMessage] = useState("");
   const [fichier, setFichier] = useState(null);
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +33,14 @@ function CreerDevoir() {
       const result = await response.json();
       console.log(" c'est sur c'est la");
       if (response.ok) {
-        alert("Devoir créé avec succès !");
+        setMessage("Devoir créé avec succès !");
+
+        // Réinitialiser les champs du formulaire
+        setMatiere("");
+        setType("");
+        setDateDebut("");
+        setDuree("");
+        setFichier(null);
       } else {
         alert("Erreur : " + result.message);
       }
@@ -47,6 +55,7 @@ function CreerDevoir() {
   return (
     <div className="creer-devoir-form">
       <h2>Créer un Devoir</h2>
+      {message && <p>{message}</p>}
       <form onSubmit={handleSubmit}>
         <label>Matière :</label>
         <input

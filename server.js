@@ -135,6 +135,37 @@ app.post("/api/examens", upload.single("fichier"), (req, res) => {
   });
 });
 
+//Récupérer les examens 
+app.get('/api/examens', (req, res) => {
+  const teacherId = 1; // Prendre l'ID de l'enseignant connecté
+  db.query('SELECT * FROM Examen WHERE idEnseignant = ?', [teacherId], (err, results) => {
+    if (err) return res.status(500).json({ message: "Erreur serveur" });
+    res.json(results);
+  });
+});
+
+
+
+//Mettre à jour un examen pour le publier
+app.put('/api/examens/:id', (req, res) => {
+  const { id } = req.params;
+  const { publie } = req.body; // Publier ou non l'examen
+
+  db.query('UPDATE Examen SET publie = ? WHERE id = ?', [publie, id], (err, result) => {
+    if (err) return res.status(500).json({ message: "Erreur de mise à jour" });
+    res.json({ message: 'Examen mis à jour avec succès' });
+  });
+});
+
+
+//correction proposée par l'IA
+app.get('/api/correction/:id', (req, res) => {
+  const { id } = req.params;
+  // Logique pour récupérer la correction de l'IA
+  // Simulons ici la réponse de l'IA
+  res.json({ correction: "Correction générée par l'IA pour l'examen " + id });
+});
+
 
 
 // Lancer le serveur
