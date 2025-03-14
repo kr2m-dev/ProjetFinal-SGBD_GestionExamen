@@ -1,0 +1,64 @@
+import React, { useState } from "react";
+import { PaperAirplaneIcon, ChatBubbleLeftRightIcon, XMarkIcon } from "@heroicons/react/24/outline";
+
+function Chatbot() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { text: "Bonjour ! Comment puis-je vous aider ?", sender: "bot" },
+  ]);
+  const [input, setInput] = useState("");
+
+  const handleSendMessage = () => {
+    if (input.trim() === "") return;
+    const newMessages = [...messages, { text: input, sender: "user" }];
+    setMessages(newMessages);
+    setInput("");
+
+    setTimeout(() => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { text: "Je suis un chatbot simulé. Un backend sera bientôt intégré !", sender: "bot" },
+      ]);
+    }, 1000);
+  };
+
+  return (
+    <div className="relative w-full mt-6">
+      {isOpen ? (
+        <div className="bg-white shadow-lg rounded-lg w-full p-4 border border-gray-200">
+          <div className="flex justify-between items-center border-b pb-2 mb-2">
+            <h3 className="text-lg font-semibold">Chatbot</h3>
+            <XMarkIcon className="h-6 w-6 cursor-pointer text-gray-500 hover:text-red-500" onClick={() => setIsOpen(false)} />
+          </div>
+          <div className="h-60 overflow-y-auto space-y-2 p-2 border rounded-md">
+            {messages.map((msg, index) => (
+              <div key={index} className={`p-2 rounded-md text-white ${msg.sender === "user" ? "bg-blue-500 self-end text-right" : "bg-gray-400"}`}>
+                {msg.text}
+              </div>
+            ))}
+          </div>
+          <div className="flex mt-2 border-t pt-2">
+            <input
+              type="text"
+              className="flex-1 p-2 border rounded-md"
+              placeholder="Écrivez un message..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+            />
+            <button className="ml-2 p-2 bg-blue-500 text-white rounded-md" onClick={handleSendMessage}>
+              <PaperAirplaneIcon className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button className="bg-blue-600 text-white p-3 rounded-md shadow-lg w-full" onClick={() => setIsOpen(true)}>
+          <ChatBubbleLeftRightIcon className="h-6 w-6" />
+          <span className="ml-2">Ouvrir le Chat</span>
+        </button>
+      )}
+    </div>
+  );
+}
+
+export default Chatbot;
