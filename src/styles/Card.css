@@ -1,0 +1,18 @@
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #374151;
+  margin-bottom: 15px;
+}
+
+.full-width {
+  grid-column: span 2;
+}

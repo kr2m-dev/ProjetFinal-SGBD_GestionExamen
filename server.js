@@ -151,7 +151,7 @@ app.put('/api/examens/:id', (req, res) => {
   const { id } = req.params;
   const { publie } = req.body; // Publier ou non l'examen
 
-  db.query('UPDATE Examen SET publie = ? WHERE id = ?', [publie, id], (err, result) => {
+  db.query('UPDATE Examen SET publie = ? WHERE idExamen = ?', [publie, id], (err, result) => {
     if (err) return res.status(500).json({ message: "Erreur de mise à jour" });
     res.json({ message: 'Examen mis à jour avec succès' });
   });

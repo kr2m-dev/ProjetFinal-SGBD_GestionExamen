@@ -47,24 +47,25 @@ function ListeDevoirs({ setView }) {
 
   return (
     <div className="liste-devoirs">
-      <h2>Liste des Devoirs</h2>
+      <h2>Liste des Examen</h2>
 
       {loading ? (
         <p>Chargement des examens...</p>
       ) : (
         <ul>
           {examens.map((devoir) => (
-            <li key={devoir.id}>
-              <strong>{devoir.matiere}</strong> - Durée : {devoir.duree} min
-              <p>Déposé le : {devoir.dateDepot} - Limite : {devoir.dateLimite}</p>
+            <li key={devoir.idExamen}>
+              <strong>{devoir.titre}</strong> <br />Durée : {devoir.duree} min
+              <p>Date de début le : {devoir.dateDebut}</p>
+              <p>A rendre avant le : {devoir.dateLimite}</p>
 
               {devoir.publie ? (
                 <span style={{ color: 'green' }}>Publié</span>
               ) : (
-                <button onClick={() => publierExamen(devoir.id)}>Publier</button>
+                <button onClick={() => publierExamen(devoir.idExamen)}>Publier</button>
               )}
 
-              <button onClick={() => consulterCorrection(devoir.id)}>
+              <button onClick={() => consulterCorrection(devoir.idExamen)}>
                 Consulter la correction IA
               </button>
 

@@ -95,6 +95,7 @@ function CreerDevoir() {
           type="file"
           accept=".pdf,.txt"
           onChange={(e) => setFichier(e.target.files[0])}
+          required
         />
 
         <button type="submit">Créer le Devoir</button>

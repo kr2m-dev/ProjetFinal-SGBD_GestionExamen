@@ -1,0 +1,19 @@
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  color: #4b5563;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.nav-item:hover {
+  background: #f3f4f6;
+  color: #2563eb;
+}
+
+.icon svg {
+  width: 24px;
+  height: 24px;
+}
