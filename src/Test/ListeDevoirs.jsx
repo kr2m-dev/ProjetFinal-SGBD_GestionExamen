@@ -44,7 +44,8 @@ function ListeDevoirs({ setView }) {
   const consulterCorrection = async (idExamen) => {
     setCorrection("Génération de la correction en cours...");
     try {
-      const response = await axios.post("http://localhost:5001/api/correction", { idExamen });
+      const response = await axios.get(`http://localhost:5001/api/correction/${idExamen}`);
+
       setCorrection(response.data.correction);
     } catch (error) {
       console.error("Erreur lors de la récupération de la correction", error);
