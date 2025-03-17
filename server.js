@@ -21,6 +21,30 @@ const storage = multer.diskStorage({
   },
 });
 
+
+// Récupérer la liste des examens publiés avec le nom du professeur pour eleve
+app.get("/api/exams", (req, res) => {
+  const sql = `
+    SELECT e.idExamen AS id, e.titre AS title, e.fichier AS fileUrl, 
+           e.publie, COALESCE(ens.nom, 'Inconnu') AS teacher 
+    FROM Examen e
+    LEFT JOIN Enseignant ens ON e.idEnseignant = ens.idEnseignant
+    WHERE e.publie = 1
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("❌ Erreur lors de la récupération des examens :", err);
+      return res.status(500).json({ error: "Erreur serveur" });
+    }
+    res.json(results);
+  });
+});
+
+
+
+
+
 const upload = multer({ storage });
 
 
@@ -116,17 +140,18 @@ app.post("/login", (req, res) => {
   });
 });
 
+
 // 🚀 Route pour créer un devoir
-app.post("/api/examens", upload.single("fichier"), (req, res) => {
-  const { matiere, type, dateDebut, dateLimite } = req.body;
+app.post("/api/examens/", upload.single("fichier"), (req, res) => {
+  const { matiere, type, dateDebut, dateLimite, idEnseignant} = req.body;
   const fichier = req.file ? req.file.filename : null; // Vérifie si un fichier a été envoyé
 
   if (!matiere || !type || !dateDebut || !dateLimite) {
     return res.status(400).json({ error: "Tous les champs sont requis !" });
   }
 
-  const sql = `INSERT INTO Examen (titre, type, dateDebut, dateLimite, fichier) VALUES (?, ?, ?, ?, ?)`;
-  db.query(sql, [matiere, type, dateDebut, dateLimite, fichier], (err, result) => {
+  const sql = `INSERT INTO Examen (titre, type, dateDebut, dateLimite, fichier, idEnseignant) VALUES (?, ?, ?, ?, ?, ?)`;
+  db.query(sql, [matiere, type, dateDebut, dateLimite, fichier, parseInt(idEnseignant)], (err, result) => {
     if (err) {
       console.error("Erreur SQL :", err);
       return res.status(500).json({ error: "Erreur lors de l'ajout du devoir" });
@@ -135,14 +160,75 @@ app.post("/api/examens", upload.single("fichier"), (req, res) => {
   });
 });
 
+
+
+
+app.get('/api/correction/:id', (req, res) => {
+  const { id } = req.params;
+
+  // Récupérer les informations de l'examen depuis la base de données
+  const sql = 'SELECT * FROM Examen WHERE idExamen = ?';
+  db.query(sql, [id], async (err, results) => {
+    if (err) {
+      console.error("Erreur SQL lors de la récupération de l'examen :", err);
+      return res.status(500).json({ message: "Erreur serveur" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: "Examen non trouvé" });
+    }
+
+    const examen = results[0];
+
+    // Vérifier si le fichier existe pour cet examen
+    const fichierPath = `uploads/${examen.fichier}`;
+    const fs = require('fs');
+    if (!fs.existsSync(fichierPath)) {
+      return res.status(404).json({ message: "Fichier de l'examen non trouvé" });
+    }
+
+    // Logique pour obtenir la correction
+    try {
+      const texteExamen = await extractTextFromFile(fichierPath); // Fonction pour extraire le texte du fichier
+      const iaCorrection = await getAICorrection(texteExamen);  // Appel à l'IA pour générer la correction
+      res.json({ correction: iaCorrection });
+    } catch (error) {
+      console.error("Erreur lors de la correction par l'IA :", error);
+      res.status(500).json({ message: "Erreur lors de la correction par l'IA" });
+    }
+  });
+});
+
+// Fonction pour extraire le texte d'un fichier PDF ou TXT
+async function extractTextFromFile(filePath) {
+  const fs = require('fs');
+  const pdf = require('pdf-parse');
+  
+  if (filePath.endsWith('.pdf')) {
+    const data = fs.readFileSync(filePath);
+    const pdfData = await pdf(data);
+    return pdfData.text;
+  } else {
+    return fs.readFileSync(filePath, 'utf8');
+  }
+}
+
+// Simulation de la génération de la correction IA
+async function getAICorrection(texte) {
+  // Logique de communication avec l'API de l'IA pour obtenir la correction
+  return `Correction générée par l'IA pour le texte : ${texte.substring(0, 200)}...`;
+}
+
+
 //Récupérer les examens 
-app.get('/api/examens', (req, res) => {
-  const teacherId = 1; // Prendre l'ID de l'enseignant connecté
+app.get('/api/examens/:id', (req, res) => {
+  const teacherId = req.params.id; // Prendre l'ID de l'enseignant connecté
   db.query('SELECT * FROM Examen WHERE idEnseignant = ?', [teacherId], (err, results) => {
     if (err) return res.status(500).json({ message: "Erreur serveur" });
     res.json(results);
   });
 });
+
 
 
 

@@ -1,14 +1,18 @@
 import { useState } from "react";
-
-
+import { useLocation } from "react-router-dom";
 
 function CreerDevoir() {
+  const locate = useLocation();
+  const { user } = locate.state || {}; // Récupérer l'identifiant de l'enseignant
+  const idEnseignant = user?.id;
+
   const [matiere, setMatiere] = useState('');
   const [type, setType] = useState('Contrôle continu (CC)');
   const [dateDebut, setDateDebut] = useState('');
   const [duree, setDuree] = useState('');
   const [message, setMessage] = useState("");
   const [fichier, setFichier] = useState(null);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -23,21 +27,24 @@ function CreerDevoir() {
     formData.append("dateDebut", dateDebut);
     formData.append("dateLimite", dateLimite);
     if (fichier) formData.append("fichier", fichier);
+    formData.append("idEnseignant", idEnseignant);
+    console.log(formData);
   
     try {
-      const response = await fetch("http://localhost:5000/api/examens", {
+      const response = await fetch(`http://localhost:5000/api/examens/`, {
         method: "POST",
         body: formData,
       });
-      console.log(response);
+      //console.log("c'est la");
+
       const result = await response.json();
-      console.log(" c'est sur c'est la");
+      //console.log(" ou pas ");
       if (response.ok) {
         setMessage("Devoir créé avec succès !");
 
         // Réinitialiser les champs du formulaire
         setMatiere("");
-        setType("");
+        setType("Contrôle continu (CC)");
         setDateDebut("");
         setDuree("");
         setFichier(null);
@@ -48,9 +55,6 @@ function CreerDevoir() {
       console.error("Erreur lors de l'envoi :", error);
     }
   };
-  
-
-
 
   return (
     <div className="creer-devoir-form">

@@ -31,10 +31,10 @@ function Tableau() {
       <aside className="sidebar">
         <h2 className="dashboard-title">Dashboard</h2>
         <nav className="nav-menu">
-          <NavItem icon={<BellIcon className="h-6 w-6" />} text="Notifications" onClick={() => setSelectedSection("Notifications")} />
-          <NavItem icon={<BookOpenIcon className="h-6 w-6" />} text="Examens" onClick={() => setSelectedSection("Examens")} />
-          <NavItem icon={<ClipboardDocumentListIcon className="h-6 w-6" />} text="Mes Copies" onClick={() => setSelectedSection("MesCopies")} />
-          <NavItem icon={<ChatBubbleLeftEllipsisIcon className="h-6 w-6" />} text="ChatBot" onClick={() => setSelectedSection("ChatBot")} />
+          <NavItem icon={<BellIcon className="h-6 w-6" />} text=" Notifications" onClick={() => setSelectedSection("Notifications")} />
+          <NavItem icon={<BookOpenIcon className="h-6 w-6" />} text=" Examens" onClick={() => setSelectedSection("Examens")} />
+          <NavItem icon={<ClipboardDocumentListIcon className="h-6 w-6" />} text=" Mes Copies" onClick={() => setSelectedSection("MesCopies")} />
+          <NavItem icon={<ChatBubbleLeftEllipsisIcon className="h-6 w-6" />} text=" ChatBot" onClick={() => setSelectedSection("ChatBot")} />
         </nav>
       </aside>
 
