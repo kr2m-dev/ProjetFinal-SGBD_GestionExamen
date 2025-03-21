@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 
 function MesCopies() {
@@ -6,13 +7,19 @@ function MesCopies() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const locate = useLocation();
+  const { user } = locate.state || {};
+  const Etudiant = user?.id;
+
+
+
+
   useEffect(() => {
     const fetchCopies = async () => {
       try {
-        const studentId = localStorage.getItem("studentId");
-        if (!studentId) throw new Error("Identifiant étudiant introuvable.");
+        if (!Etudiant) throw new Error("Identifiant étudiant introuvable.");
 
-        const response = await axios.get(`http://localhost:5000/api/copies?studentId=${studentId}`);
+        const response = await axios.get(`http://localhost:5000/api/copies/${Etudiant}`);
         setCopies(response.data);
       } catch (err) {
         setError(err.message);
@@ -28,12 +35,14 @@ function MesCopies() {
   if (error) return <div className="text-red-500 text-center">{error}</div>;
   if (copies.length === 0) return <div className="text-center text-gray-600">Aucune copie trouvée.</div>;
 
+  console.log(copies);
+
   return (
     <div className="grid gap-6">
       {copies.map((copy, index) => (
         <div key={index} className="bg-white shadow-md p-6 rounded-lg border">
-          <h3 className="text-2xl font-bold text-gray-800">{copy.nomMatiere}</h3>
-          <p className="text-lg text-gray-600">Note : <span className="font-semibold">{copy.noteFinale ?? "Non notée"}</span></p>
+          <h3 className="text-2xl font-bold text-gray-800">{copy.nomMatiere}({copy.type})</h3>
+          <p className="text-lg text-gray-600">Note : <span className="font-semibold">{copy.note ?? "Non notée"}</span></p>
           {copy.correctionUrl && (
             <a
               href={copy.correctionUrl}
@@ -50,30 +59,3 @@ function MesCopies() {
 }
 
 export default MesCopies;
-
-//le back end
-// app.get("/api/copies", async (req, res) => {
-//   const { studentId } = req.query;
-//   if (!studentId) return res.status(400).json({ error: "Identifiant étudiant requis." });
-
-//   try {
-//     const query = `
-//       SELECT 
-//         M.nomMatiere, 
-//         C.noteFinale, 
-//         Corr.corrige AS correctionUrl
-//       FROM Copie C
-//       JOIN recevoir R ON C.idCopie = R.idCopie
-//       JOIN Examen E ON R.idExamen = E.idExamen
-//       JOIN Correction Corr ON E.idCorrection = Corr.idCorrection
-//       JOIN composer_ Co ON E.idExamen = Co.idExamen
-//       JOIN Matiere M ON Co.idMatiere = M.idMatiere
-//       WHERE Co.idEtudiant = ?;
-//     `;
-
-//     const [copies] = await db.execute(query, [studentId]);
-//     res.json(copies);
-//   } catch (error) {
-//     res.status(500).json({ error: "Erreur serveur." });
-//   }
-// });

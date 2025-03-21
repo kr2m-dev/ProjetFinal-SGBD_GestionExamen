@@ -1,3 +1,4 @@
+
 /* Reset de base */
 * {
   margin: 0;
@@ -7,9 +8,18 @@
 }
 
 body {
+  margin: 0;  /* Supprime toute marge */
+  padding: 0;
   background-color: #f4f4f9;
   color: #333;
   line-height: 1.6;
+}
+.sidebar-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.menu-toggle-button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 /* Conteneur principal */

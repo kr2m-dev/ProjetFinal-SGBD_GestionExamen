@@ -1,21 +1,19 @@
-export const uploadExamResponse = async (file, examId) => {
+export const uploadExamResponse = async (file, examId,etuId) => {
   const formData = new FormData();
-  formData.append("file", file);
-  formData.append("examId", examId);
+  formData.append("copie", file);  
+  formData.append("idExamen", examId);
+  formData.append("idEtudiant", etuId);
 
-  try {
-    const response = await fetch("http://backend-url/api/upload", {
-      method: "POST",
-      body: formData,
-    });
+  console.log("📝 Données envoyées :", formData.get("copie"), formData.get("idExamen"));
 
-    if (!response.ok) {
-      throw new Error("Erreur lors de l'envoi du fichier");
-    }
+  const response = await fetch("http://localhost:5000/api/soumettre", {
+    method: "POST",
+    body: formData,
+  });
 
-    return await response.json();
-  } catch (error) {
-    console.error("Upload error:", error);
-    throw error;
+  if (!response.ok) {
+    throw new Error("Échec de l'envoi de la copie.");
   }
+
+  return await response.json();
 };

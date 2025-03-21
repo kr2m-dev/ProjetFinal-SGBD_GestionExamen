@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { uploadExamResponse } from "../services/SoumissionFormulaire";
+import { useLocation } from "react-router-dom";
 
 const SoumetExam = ({ examId }) => {
-  console.log(`📝 Rendering SoumetExam pour examId: ${examId}`); // 🔥 Vérification du nombre de formulaires affichés
+  const locate = useLocation();
+  const { user } = locate.state || {}; // Récupérer l'identifiant de l'etudiant
+  const etuId = user?.id;
+  console.log(`📝 Rendering SoumetExam pour examId: ${examId}`);
 
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState("");
@@ -19,17 +23,17 @@ const SoumetExam = ({ examId }) => {
     }
 
     try {
-      await uploadExamResponse(file, examId);
-      setMessage("Fichier envoyé avec succès !");
+      await uploadExamResponse(file, examId,etuId);
+      setMessage("📂 Copie soumise avec succès !");
       setFile(null);
     } catch (error) {
-      setMessage("Échec de l'envoi du fichier.");
+      setMessage("❌ Échec de l'envoi du fichier.");
     }
   };
 
   return (
     <div className="p-4 border rounded">
-      <h2 className="text-lg font-bold mb-2">Soumettre votre réponse</h2>
+      <h2 className="text-lg font-bold mb-2">Soumettre votre copie</h2>
       <input type="file" accept="application/pdf" onChange={handleFileChange} />
       <button
         onClick={handleSubmit}

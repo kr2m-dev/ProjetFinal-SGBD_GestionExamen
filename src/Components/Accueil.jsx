@@ -1,11 +1,21 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from "framer-motion";
 import User from './User';
 import Footer from './Footer';
 import logo from "./../Images/logo.jpeg";
-import { motion } from "framer-motion";
+import studentImg from "./../Images/student.png";
+import teacherImg from "./../Images/teacher.png";
 import '../App.css';
 
 function Accueil() {
+  const navigate = useNavigate(); // Hook pour la navigation
+
+  // Fonction pour gérer la redirection avec le choix utilisateur
+  const handleNavigation = (role) => {
+    navigate(`/connexion?role=${role}`); // Passe le rôle en paramètre d'URL
+  };
+
   return (
     <div style={styles.container}>
       {/* Header */}
@@ -49,16 +59,25 @@ function Accueil() {
       <section style={styles.optionSection}>
         <div style={styles.optionContainer}>
           <motion.div 
+            style={styles.optionCard}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <User choix="etudiant" description="Progresser à ton rythme et décrocher la réussite que tu mérites." />
+            <img src={studentImg} alt="Étudiant" style={styles.optionImg} />
+            <h3>Étudiant</h3>
+            <p>Progresser à ton rythme et décrocher la réussite que tu mérites.</p>
+            <User choix="etudiant">  <button style={{ ...styles.button, width: "100%" }} onClick={() => handleNavigation('etudiant')}>Let's Go</button></User>
           </motion.div>
+
           <motion.div 
+            style={styles.optionCard}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <User choix="enseignant" description="Gérez vos examens en toute simplicité, tout en offrant à vos étudiants un suivi personnalisé." />
+            <img src={teacherImg} alt="Enseignant" style={styles.optionImg} />
+            <h3>Enseignant</h3>
+            <p>Gérez vos examens en toute simplicité, tout en offrant à vos étudiants un suivi personnalisé.</p>
+            <User choix="enseignant"> <button style={{ ...styles.button, width: "100%" }} onClick={() => handleNavigation('enseignant')}>Let's Go</button> </User>
           </motion.div>
         </div>
       </section>
@@ -74,58 +93,92 @@ export default Accueil;
 // Styles
 const styles = {
   container: {
-    fontFamily: "sans-serif",
+    fontFamily: "Arial, sans-serif",
+    margin: 0,
+    padding: 0,
+    backgroundColor: "#f9f9f9",
+    color: "#333",
+    lineHeight: "1.6",
   },
   header: {
     background: "linear-gradient(to right, #3b82f6, #6366f1)",
     color: "white",
-    padding: "40px 0",
     textAlign: "center",
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+    padding: "2rem 0",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    position: "relative",
+    overflow: "hidden",
   },
   headerContent: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    position: "relative",
+    zIndex: 1,
+    padding: "0 20px",
   },
   logo: {
-    width: "80px",
+    width: "70px",
     borderRadius: "50%",
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2)",
+    marginBottom: "1rem",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.2)",
+    transition: "transform 0.3s ease-in-out",
   },
   title: {
-    fontSize: "28px",
+    fontSize: "2.5rem",
     fontWeight: "bold",
-    marginTop: "10px",
+    marginBottom: "0.5rem",
+    letterSpacing: "1px",
   },
   presentation: {
-    backgroundColor: "#f3f4f6",
-    padding: "50px 20px",
+    backgroundColor: "#fff",
+    padding: "3rem 20px",
     textAlign: "center",
   },
   presentationContent: {
     maxWidth: "800px",
     margin: "0 auto",
-    fontSize: "18px",
-    lineHeight: "1.6",
   },
   highlight: {
     color: "#007bff",
     fontWeight: "bold",
   },
   subtext: {
-    marginTop: "20px",
-    fontSize: "18px",
+    fontSize: "1.2rem",
     fontWeight: "500",
+    marginTop: "1.5rem",
   },
   optionSection: {
-    backgroundColor: "#ffffff",
-    padding: "60px 20px",
+    padding: "4rem 20px",
+    backgroundColor: "#f9f9f9",
   },
   optionContainer: {
     display: "flex",
-    flexWrap: "wrap",
     justifyContent: "center",
-    gap: "40px",
+    gap: "2rem",
+    flexWrap: "wrap",
+  },
+  optionCard: {
+    backgroundColor: "#fff",
+    borderRadius: "10px",
+    padding: "2rem",
+    textAlign: "center",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+    width: "300px",
+  },
+  optionImg: {
+    width: "80px",
+    marginBottom: "1rem",
+  },
+  button: {
+    display: "inline-block",
+    padding: "0.75rem 1.5rem",
+    backgroundColor: "#007bff",
+    color: "white",
+    borderRadius: "5px",
+    textDecoration: "none",
+    marginTop: "1.5rem",
+    transition: "background-color 0.3s ease-in-out",
+    cursor: "pointer",
+    border: "none",
+    fontSize: "1rem",
   },
 };

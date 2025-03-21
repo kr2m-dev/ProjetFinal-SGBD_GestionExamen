@@ -48,7 +48,7 @@ function Tableau() {
         <div className="content-grid">
           {selectedSection === "Notifications" && <Card title="Notifications"><Accueil /></Card>}
           {selectedSection === "Examens" && <Card title="Examens disponibles"><ListExam role={role} /></Card>}
-          {selectedSection === "MesCopies" && role !== "teacher" && <Card title="Vos Copies" fullWidth><MesCopies /></Card>}
+          {selectedSection === "MesCopies" && <Card title="Vos Copies" fullWidth><MesCopies /></Card>}
           {selectedSection === "ChatBot" && <Card title="Chatbot - Posez vos questions"><Chatbot /></Card>}
         </div>
       </main>
